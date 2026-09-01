@@ -76,7 +76,7 @@ describe('FraudRiskService', () => {
       expect(firstTimeSignal?.weight).toBe(10);
     });
 
-    it('returns HIGH risk and blocks when velocity exceeds threshold', async () => {
+    it('returns HIGH risk and requires review below the automatic block threshold', async () => {
       // Payment velocity = 8 (exceeds threshold of 5 → +30)
       // Failure velocity = 5 (exceeds threshold of 3 → +25)
       // Amount anomaly: avg=200, payment=1000 → 5× average, count=5 → +20
@@ -92,7 +92,8 @@ describe('FraudRiskService', () => {
 
       expect(assessment.score).toBeGreaterThanOrEqual(75);
       expect(assessment.riskLevel).toBe(FraudRiskLevel.HIGH);
-      expect(assessment.blocked).toBe(true);
+      expect(assessment.blocked).toBe(false);
+      expect(assessment.requiresReview).toBe(true);
 
       const velSignal = assessment.signals.find((s) => s.code === 'HIGH_PAYMENT_VELOCITY');
       expect(velSignal).toBeDefined();

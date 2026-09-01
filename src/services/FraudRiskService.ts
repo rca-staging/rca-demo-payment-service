@@ -48,7 +48,7 @@ export interface FraudSignal {
   weight: number;
 }
 
-const BLOCK_THRESHOLD = 75;
+const BLOCK_THRESHOLD = 80;
 const REVIEW_THRESHOLD = 50;
 
 export class FraudRiskService {
