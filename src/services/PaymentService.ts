@@ -294,7 +294,7 @@ export class PaymentService {
 
   async listPayments(filters: PaymentFilters): Promise<PaginatedResult<Payment>> {
     const db = getDb();
-    const page = filters.page ?? 1;
+    const page = Math.max(1, filters.page ?? 1);
     const limit = Math.min(filters.limit ?? 20, 100);
     const offset = (page - 1) * limit;
 
