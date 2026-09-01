@@ -43,6 +43,7 @@ export class RefundService {
     }
 
     const refundAmount = dto.amount ?? Number(payment.amount);
+    const refundReason = dto.reason?.trim() || undefined;
     const alreadyRefunded = Number(payment.refunded_amount);
 
     if (refundAmount <= 0) {
@@ -66,7 +67,7 @@ export class RefundService {
         amount: refundAmount,
         currency: payment.currency as string,
         status: RefundStatus.PENDING,
-        reason: dto.reason ?? null,
+        reason: refundReason ?? null,
         initiated_by: dto.initiatedBy,
         metadata: dto.metadata ? JSON.stringify(dto.metadata) : null,
       })
@@ -80,7 +81,7 @@ export class RefundService {
       const providerRefund = await provider.createRefund({
         providerPaymentId: payment.provider_payment_id as string,
         amount: refundAmount,
-        reason: dto.reason,
+        reason: refundReason,
       });
 
       // 4. Update refund record
