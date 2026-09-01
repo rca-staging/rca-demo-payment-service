@@ -87,8 +87,10 @@ export class PaymentRetryService {
     failureCode: string,
     failureMessage: string,
   ): Promise<{ attemptNumber: number; scheduledAt: Date }> {
+    const normalizedFailureCode = failureCode.trim().toLowerCase();
+
     // 1. Hard block on permanent failures
-    if (PERMANENT_FAILURE_CODES.has(failureCode)) {
+    if (PERMANENT_FAILURE_CODES.has(normalizedFailureCode)) {
       logger.warn('PaymentRetryService: permanent failure — no retry', {
         paymentId,
         failureCode,
@@ -100,7 +102,7 @@ export class PaymentRetryService {
     }
 
     // 2. Check if the failure code is in the retryable list
-    if (!this.policy.retryableFailureCodes.includes(failureCode)) {
+    if (!this.policy.retryableFailureCodes.includes(normalizedFailureCode)) {
       throw new PaymentError(
         `Failure code '${failureCode}' is not retryable`,
         'NON_RETRYABLE_FAILURE',
